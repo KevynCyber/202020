@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Read(//c/Users/Kev/projects/agent-workflow/**)"
+    ]
+  }
+}
