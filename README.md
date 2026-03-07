@@ -14,7 +14,7 @@ The app runs silently in the system tray. Every 20 minutes, it covers all monito
 - **Sound notifications** -- chime on break start/end (toggleable)
 - **Start with Windows** -- optional auto-start via registry
 - **Pause/Resume** -- pause the timer from the tray menu
-- **Session-aware** -- pauses on lock/sleep, resets timer on unlock/wake
+- **Session-aware** -- pauses on lock/sleep/screen-off, resets timer on unlock/wake/screen-on
 - **Single instance** -- prevents duplicate processes via named mutex
 - **Escape to skip** -- dismiss any break early with Escape or Alt+F4
 

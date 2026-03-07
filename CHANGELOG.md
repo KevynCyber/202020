@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0] - 2026-03-07
+
+### Added
+
+- Monitor power state detection: pauses timer when display turns off and resets on display on, catching screen-off triggers (e.g. `SC_MONITORPOWER`) that don't lock the session or suspend the system
+
 ## [1.0.0] - 2026-03-04
 
 ### Added
