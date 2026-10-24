@@ -2,6 +2,7 @@ using TwentyTwentyTwenty;
 
 namespace TwentyTwentyTwenty.Tests;
 
+// Covers: ESC-001
 public class BreakManagerTests : IDisposable
 {
     private readonly string _tempFile;
@@ -95,6 +96,23 @@ public class BreakManagerTests : IDisposable
 
         mgr.Pause(); // ends break
         Assert.True(ended);
+    }
+
+    [StaFact]
+    public void TakeBreakNow_AllowEscapeDismissFalse_UserCloseDoesNotEndBreak()
+    {
+        _settingsManager.Current.AllowEscapeDismiss = false;
+        using var mgr = new BreakManager(_settingsManager);
+        mgr.Start();
+
+        mgr.TakeBreakNow();
+        var overlays = Application.OpenForms.OfType<OverlayForm>().ToList();
+        Assert.NotEmpty(overlays);
+
+        foreach (var overlay in overlays)
+            overlay.Close(); // Close() raises FormClosing with CloseReason.UserClosing
+
+        Assert.True(mgr.IsBreakActive);
     }
 
     public void Dispose()

@@ -2,6 +2,7 @@ using TwentyTwentyTwenty;
 
 namespace TwentyTwentyTwenty.Tests;
 
+// Covers: ESC-001
 public class SettingsManagerTests : IDisposable
 {
     private readonly string _tempDir;
@@ -44,6 +45,29 @@ public class SettingsManagerTests : IDisposable
         Assert.Equal(30, mgr2.Current.BreakDurationSeconds);
         Assert.False(mgr2.Current.SoundEnabled);
         Assert.True(mgr2.Current.AutoStart);
+    }
+
+    [Fact]
+    public void Load_NoFile_AllowEscapeDismissDefaultsTrue()
+    {
+        var mgr = new SettingsManager(_tempFile);
+        mgr.Load();
+
+        Assert.True(mgr.Current.AllowEscapeDismiss);
+    }
+
+    [Fact]
+    public void SaveAndLoad_AllowEscapeDismissFalse_RoundTrips()
+    {
+        var mgr = new SettingsManager(_tempFile);
+        mgr.Load();
+        mgr.Current.AllowEscapeDismiss = false;
+        mgr.Save();
+
+        var mgr2 = new SettingsManager(_tempFile);
+        mgr2.Load();
+
+        Assert.False(mgr2.Current.AllowEscapeDismiss);
     }
 
     [Fact]
