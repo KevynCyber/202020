@@ -5,7 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>TwentyTwentyTwenty</RootNamespace>
     <AssemblyName>202020</AssemblyName>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,6 +14,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\icon.ico" LogicalName="TwentyTwentyTwenty.Resources.icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="202020.Tests" />
   </ItemGroup>
 
 </Project>

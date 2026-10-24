@@ -96,10 +96,9 @@ public sealed class TrayManager : IDisposable
         }
 
         var form = new SettingsForm(_settingsManager);
+        form.Applied += SyncMenuFromSettings;
         form.FormClosed += (_, _) =>
         {
-            if (form.DialogResult == DialogResult.OK)
-                SyncMenuFromSettings();
             _settingsForm = null;
             form.Dispose();
         };

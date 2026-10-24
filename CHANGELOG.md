@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0] - 2026-10-24
+
+### Changed
+
+- Settings window: OK/Cancel replaced by Apply and Close. Apply is enabled only while a value differs from the last applied one, saves without closing the window, and briefly shows "Applied"; Close discards unapplied changes
+- Start with Windows registry entry is only rewritten when that option actually changed
+
 ## [1.2.0] - 2026-10-24
 
 ### Added

@@ -52,7 +52,8 @@ dotnet test
 ## Settings
 
 Open **Settings...** from the tray menu to change the break interval (1-240 minutes), break duration (5-600 seconds), sound, Start with Windows,
-and whether Esc / Alt+F4 may skip a break. A changed interval takes effect from the next timer reset (after the current interval or break).
+and whether Esc / Alt+F4 may skip a break. Click **Apply** (enabled only when something changed) to save without closing the window; **Close**
+discards unapplied changes. A changed interval takes effect from the next timer reset (after the current interval or break).
 
 Settings are persisted as JSON in `%LOCALAPPDATA%\202020\settings.json`.
 
