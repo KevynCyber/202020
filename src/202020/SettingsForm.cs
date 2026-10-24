@@ -18,6 +18,7 @@ public class SettingsForm : Form
     internal CheckBox SoundCheck { get; }
     internal CheckBox AllowDismissCheck { get; }
     internal Button ApplyButton { get; }
+    internal Button CloseButton { get; }
 
     public event Action? Applied;
 
@@ -38,6 +39,8 @@ public class SettingsForm : Form
         MaximizeBox = false;
         MinimizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
+        AutoScaleDimensions = new SizeF(96F, 96F);
+        AutoScaleMode = AutoScaleMode.Dpi;
         AutoSize = true;
         AutoSizeMode = AutoSizeMode.GrowAndShrink;
         Padding = new Padding(12);
@@ -63,11 +66,14 @@ public class SettingsForm : Form
             Checked = current.AllowEscapeDismiss,
         };
 
-        ApplyButton = new Button { Text = "Apply", Enabled = false };
-        var closeButton = new Button { Text = "Close", DialogResult = DialogResult.Cancel };
+        var buttonMinSize = new Size(75, 23);
+        ApplyButton = new Button { Text = "Apply", Enabled = false, AutoSize = true, MinimumSize = buttonMinSize };
+        CloseButton = new Button { Text = "Close", DialogResult = DialogResult.Cancel, AutoSize = true, MinimumSize = buttonMinSize };
         ApplyButton.Click += (_, _) => Apply();
+        // The form is shown modeless (Show()), where DialogResult alone does not close it.
+        CloseButton.Click += (_, _) => Close();
         AcceptButton = ApplyButton;
-        CancelButton = closeButton;
+        CancelButton = CloseButton;
 
         _appliedTimer = new System.Windows.Forms.Timer { Interval = 2000 };
         _appliedTimer.Tick += (_, _) =>
@@ -87,12 +93,21 @@ public class SettingsForm : Form
         {
             FlowDirection = FlowDirection.RightToLeft,
             AutoSize = true,
-            Dock = DockStyle.Fill,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            WrapContents = false,
+            Anchor = AnchorStyles.Right,
+            Margin = new Padding(0, 8, 0, 0),
         };
-        buttons.Controls.Add(closeButton);
+        buttons.Controls.Add(CloseButton);
         buttons.Controls.Add(ApplyButton);
 
-        var layout = new TableLayoutPanel { ColumnCount = 2, AutoSize = true };
+        var layout = new TableLayoutPanel
+        {
+            ColumnCount = 2,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Location = new Point(Padding.Left, Padding.Top),
+        };
         layout.Controls.Add(new Label { Text = "Break interval (minutes):", AutoSize = true, Anchor = AnchorStyles.Left }, 0, 0);
         layout.Controls.Add(IntervalInput, 1, 0);
         layout.Controls.Add(new Label { Text = "Break duration (seconds):", AutoSize = true, Anchor = AnchorStyles.Left }, 0, 1);

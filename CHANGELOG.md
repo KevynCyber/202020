@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1] - 2026-10-24
+
+### Fixed
+
+- Settings window: Close button (and Esc) now actually closes the window
+- Settings window: Apply/Close buttons size to their text at high DPI instead of clipping
+
 ## [1.3.0] - 2026-10-24
 
 ### Changed
