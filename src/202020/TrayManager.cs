@@ -8,6 +8,8 @@ public sealed class TrayManager : IDisposable
     private readonly ToolStripMenuItem _autoStartItem;
     private readonly ToolStripMenuItem _pauseItem;
     private readonly SettingsManager _settingsManager;
+    private SettingsForm? _settingsForm;
+    private bool _syncingMenu;
 
     public event Action? TakeBreakNowClicked;
     public event Action? ExitClicked;
@@ -21,6 +23,9 @@ public sealed class TrayManager : IDisposable
         var takeBreakItem = new ToolStripMenuItem("Take Break Now");
         takeBreakItem.Click += (_, _) => TakeBreakNowClicked?.Invoke();
 
+        var settingsItem = new ToolStripMenuItem("Settings...");
+        settingsItem.Click += (_, _) => ShowSettings();
+
         _soundItem = new ToolStripMenuItem("Sound Enabled")
         {
             Checked = settingsManager.Current.SoundEnabled,
@@ -28,6 +33,7 @@ public sealed class TrayManager : IDisposable
         };
         _soundItem.CheckedChanged += (_, _) =>
         {
+            if (_syncingMenu) return;
             settingsManager.Current.SoundEnabled = _soundItem.Checked;
             settingsManager.Save();
         };
@@ -39,6 +45,7 @@ public sealed class TrayManager : IDisposable
         };
         _autoStartItem.CheckedChanged += (_, _) =>
         {
+            if (_syncingMenu) return;
             AutoStartManager.SetEnabled(_autoStartItem.Checked);
             settingsManager.Current.AutoStart = _autoStartItem.Checked;
             settingsManager.Save();
@@ -57,6 +64,7 @@ public sealed class TrayManager : IDisposable
 
         _menu.Items.Add(takeBreakItem);
         _menu.Items.Add(new ToolStripSeparator());
+        _menu.Items.Add(settingsItem);
         _menu.Items.Add(_soundItem);
         _menu.Items.Add(_autoStartItem);
         _menu.Items.Add(new ToolStripSeparator());
@@ -77,6 +85,37 @@ public sealed class TrayManager : IDisposable
     {
         var status = _pauseItem.Checked ? "Paused" : "Active";
         _notifyIcon.Text = $"20-20-20 ({status})";
+    }
+
+    private void ShowSettings()
+    {
+        if (_settingsForm != null)
+        {
+            _settingsForm.Activate();
+            return;
+        }
+
+        var form = new SettingsForm(_settingsManager);
+        form.FormClosed += (_, _) =>
+        {
+            if (form.DialogResult == DialogResult.OK)
+                SyncMenuFromSettings();
+            _settingsForm = null;
+            form.Dispose();
+        };
+        _settingsForm = form;
+        form.Show();
+        form.Activate();
+    }
+
+    // SettingsForm already persisted these values; suppress the item handlers so the
+    // sync does not re-run SetEnabled/Save.
+    private void SyncMenuFromSettings()
+    {
+        _syncingMenu = true;
+        _soundItem.Checked = _settingsManager.Current.SoundEnabled;
+        _autoStartItem.Checked = _settingsManager.Current.AutoStart;
+        _syncingMenu = false;
     }
 
     private static Icon LoadIcon()

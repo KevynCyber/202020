@@ -4,9 +4,11 @@ public class OverlayForm : Form
 {
     private readonly Label _countdownLabel;
     private readonly Label _messageLabel;
+    private readonly bool _allowDismiss;
 
-    public OverlayForm(Screen screen)
+    public OverlayForm(Screen screen, bool allowDismiss = true)
     {
+        _allowDismiss = allowDismiss;
         FormBorderStyle = FormBorderStyle.None;
         BackColor = Color.Black;
         ShowInTaskbar = false;
@@ -75,7 +77,8 @@ public class OverlayForm : Form
             (e.Control && e.KeyCode == Keys.C))
         {
             e.Handled = true;
-            OnDismissRequested();
+            if (_allowDismiss)
+                OnDismissRequested();
             return;
         }
         base.OnKeyDown(e);
@@ -86,7 +89,8 @@ public class OverlayForm : Form
         if (e.CloseReason == CloseReason.UserClosing)
         {
             e.Cancel = true;
-            OnDismissRequested();
+            if (_allowDismiss)
+                OnDismissRequested();
             return;
         }
         base.OnFormClosing(e);

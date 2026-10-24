@@ -6,4 +6,5 @@ public class Settings
     public int BreakDurationSeconds { get; set; } = 20;
     public bool SoundEnabled { get; set; } = true;
     public bool AutoStart { get; set; }
+    public bool AllowEscapeDismiss { get; set; } = true;
 }

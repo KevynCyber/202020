@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0] - 2026-10-24
+
+### Added
+
+- Settings window (tray menu "Settings...") for break interval, break duration, sound, Start with Windows, and Esc skip
+- `AllowEscapeDismiss` setting (default true): when off, Escape, Ctrl+C, and Alt+F4 no longer skip a break
+
 ## [1.1.0] - 2026-03-07
 
 ### Added

@@ -23,6 +23,7 @@ The app runs silently in the system tray. Every 20 minutes, it covers all monito
 ```
 Take Break Now
 --------------
+Settings...
 Sound Enabled     (toggleable)
 Start with Windows (toggleable)
 --------------
@@ -50,6 +51,9 @@ dotnet test
 
 ## Settings
 
+Open **Settings...** from the tray menu to change the break interval (1-240 minutes), break duration (5-600 seconds), sound, Start with Windows,
+and whether Esc / Alt+F4 may skip a break. A changed interval takes effect from the next timer reset (after the current interval or break).
+
 Settings are persisted as JSON in `%LOCALAPPDATA%\202020\settings.json`.
 
 | Setting | Default |
@@ -58,3 +62,4 @@ Settings are persisted as JSON in `%LOCALAPPDATA%\202020\settings.json`.
 | BreakDurationSeconds | 20 |
 | SoundEnabled | true |
 | AutoStart | false |
+| AllowEscapeDismiss | true |

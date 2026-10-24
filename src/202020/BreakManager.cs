@@ -90,7 +90,7 @@ public sealed class BreakManager : IDisposable
 
         foreach (var screen in Screen.AllScreens)
         {
-            var overlay = new OverlayForm(screen);
+            var overlay = new OverlayForm(screen, _settingsManager.Current.AllowEscapeDismiss);
             overlay.DismissRequested += DismissBreak;
             overlay.UpdateCountdown(_remainingSeconds);
             _overlays.Add(overlay);
