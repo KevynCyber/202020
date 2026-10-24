@@ -163,3 +163,80 @@ public class SettingsFormTests : IDisposable
         Assert.Equal("Apply", form.ApplyButton.Text);
     }
 }
+
+// Requirement: the settings window, shown modelessly from the tray, closes when the user clicks
+// Close or presses Escape, and its Apply/Close buttons are fully visible inside the window with
+// a margin below them (never clipped by the bottom edge).
+// Covers: ESC-001
+public class SettingsFormWindowTests : IDisposable
+{
+    private const int MinBottomMargin = 6;
+
+    private readonly string _tempDir;
+    private readonly SettingsManager _manager;
+
+    public SettingsFormWindowTests()
+    {
+        _tempDir = Path.Combine(Path.GetTempPath(), "202020-tests-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(_tempDir);
+        _manager = new SettingsManager(Path.Combine(_tempDir, "settings.json"));
+        _manager.Load();
+    }
+
+    public void Dispose()
+    {
+        if (Directory.Exists(_tempDir))
+            Directory.Delete(_tempDir, recursive: true);
+    }
+
+    [StaFact]
+    public void CloseButton_OnModelessForm_ClosesForm()
+    {
+        using var form = new SettingsForm(_manager);
+        int closed = 0;
+        form.FormClosed += (_, _) => closed++;
+        form.Show();
+        Application.DoEvents();
+
+        form.CloseButton.PerformClick();
+        Application.DoEvents();
+
+        Assert.Equal(1, closed);
+    }
+
+    [StaFact]
+    public void Escape_ViaCancelButton_OnModelessForm_ClosesForm()
+    {
+        using var form = new SettingsForm(_manager);
+        int closed = 0;
+        form.FormClosed += (_, _) => closed++;
+        form.Show();
+        Application.DoEvents();
+
+        Assert.Same(form.CloseButton, form.CancelButton);
+        ((Button)form.CancelButton!).PerformClick();
+        Application.DoEvents();
+
+        Assert.Equal(1, closed);
+    }
+
+    [StaFact]
+    public void ApplyAndCloseButtons_FullyInsideClientArea_WithBottomMargin()
+    {
+        using var form = new SettingsForm(_manager);
+        form.Show();
+        Application.DoEvents();
+
+        var client = form.RectangleToScreen(form.ClientRectangle);
+        foreach (var button in new[] { form.ApplyButton, form.CloseButton })
+        {
+            var rect = button.RectangleToScreen(button.ClientRectangle);
+            Assert.True(client.Contains(rect),
+                $"{button.Text} button {rect} not inside client area {client}");
+            Assert.True(client.Bottom - rect.Bottom >= MinBottomMargin,
+                $"{button.Text} button bottom margin {client.Bottom - rect.Bottom}px < {MinBottomMargin}px (button {rect}, client {client})");
+        }
+
+        form.Close();
+    }
+}
